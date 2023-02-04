@@ -1,6 +1,7 @@
 package com.olvera.moviedbcompose.data
 
 import com.olvera.moviedbcompose.di.DispatchersModule
+import com.olvera.moviedbcompose.model.Movie
 import com.olvera.moviedbcompose.model.MovieResult
 import com.olvera.moviedbcompose.util.NetworkResult
 import com.olvera.moviedbcompose.util.makeNetworkCall
@@ -17,7 +18,7 @@ interface MovieTask {
 
 
 class MovieRepository @Inject constructor(
-    private val repository: MovieApi,
+    private val movieApi: MovieApi,
     @DispatchersModule.IoDispatcher private val dispatcher: CoroutineDispatcher
 ): MovieTask {
 
@@ -29,7 +30,7 @@ class MovieRepository @Inject constructor(
 
 
     private suspend fun downloadMovie(apiKey: String): NetworkResult<MovieResult> = makeNetworkCall {
-        repository.getMoviePopular(apiKey)
+        movieApi.getMoviePopular(apiKey)
     }
 
 

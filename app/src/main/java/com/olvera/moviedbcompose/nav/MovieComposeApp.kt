@@ -1,5 +1,7 @@
 package com.olvera.moviedbcompose.nav
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -8,7 +10,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@ExperimentalCoilApi
 @Composable
 fun MovieComposeApp() {
 
