@@ -25,7 +25,7 @@ data class Movie(
     var original_language: String? = null,
 
     @SerializedName("title")
-    var title: String? = null,
+    var title: String,
 
     @SerializedName("backdrop_path")
     var backdrop_path: String? = null,
