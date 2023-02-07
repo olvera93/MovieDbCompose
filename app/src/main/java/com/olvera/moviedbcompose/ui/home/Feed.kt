@@ -1,5 +1,6 @@
 package com.olvera.moviedbcompose.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,23 +31,23 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.olvera.moviedbcompose.model.Movie
 import kotlin.math.absoluteValue
-import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
-import coil.compose.rememberAsyncImagePainter
+import com.olvera.moviedbcompose.R
+import com.olvera.moviedbcompose.composable.LoadingWheel
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_BASE_URL
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_W500
+import com.olvera.moviedbcompose.util.NetworkResult
 import com.olvera.moviedbcompose.util.rateColors
 
 
 private const val GRID_SPAN_COUNT = 2
 
-@ExperimentalPagerApi
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalPagerApi::class)
 @ExperimentalCoilApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -51,55 +56,75 @@ fun Feed(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val moviePopular = viewModel.movieResponse.value
+    val status = viewModel.status.value
 
-    if (moviePopular.isNotEmpty()) {
-        HorizontalPager(
-            count = moviePopular.size
-        ) { page ->
 
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Card(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            // Calculate the absolute offset for the current page from the
-                            // scroll position. We use the absolute value which allows us to mirror
-                            // any effects for both directions
-                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+    Scaffold(
+        topBar = {
+            MovieScreenTopBar()
+        }
+    ) {
+        Column {
+            HorizontalPager(
+                count = moviePopular.size
+            ) { page ->
 
-                            // We animate the scaleX + scaleY, between 85% and 100%
-                            lerp(
-                                start = 0.85f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            ).also { scale ->
-                                scaleX = scale
-                                scaleY = scale
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .graphicsLayer {
+                                // Calculate the absolute offset for the current page from the
+                                // scroll position. We use the absolute value which allows us to mirror
+                                // any effects for both directions
+                                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+
+                                // We animate the scaleX + scaleY, between 85% and 100%
+                                lerp(
+                                    start = 0.85f,
+                                    stop = 1f,
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                ).also { scale ->
+                                    scaleX = scale
+                                    scaleY = scale
+                                }
+
+                                // We animate the alpha, between 50% and 100%
+                                alpha = lerp(
+                                    start = 0.5f,
+                                    stop = 1f,
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                )
                             }
 
-                            // We animate the alpha, between 50% and 100%
-                            alpha = lerp(
-                                start = 0.5f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            )
-                        }
-
-                ) {
-                    val movie = moviePopular[page]
-                    MoviePopularGridItem(movie)
-
-
+                    ) {
+                        val movie = moviePopular[page]
+                        MoviePopularGridItem(movie)
+                    }
                 }
             }
         }
 
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 240.dp, bottom = 60.dp)
+        ) {
+            Text(
+                text = "Upcoming Movies",
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 275.dp, bottom = 60.dp)
         ) {
 
             LazyVerticalGrid(
@@ -119,6 +144,14 @@ fun Feed(
                 }
             )
         }
+    }
+
+
+
+
+
+    if (status is NetworkResult.Loading) {
+        LoadingWheel()
     }
 }
 
@@ -158,13 +191,6 @@ fun MoviePopularGridItem(
 fun MovieUpcomingGridItem(
     movie: Movie
 ) {
-
-    val painter = rememberAsyncImagePainter(
-        model = IMAGE_BASE_URL + IMAGE_W500 + movie.poster_path,
-        error = rememberVectorPainter(Icons.Filled.Add),
-        placeholder = rememberVectorPainter(Icons.Default.MoreVert)
-    )
-
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -176,13 +202,19 @@ fun MovieUpcomingGridItem(
         ) {
 
         Box {
-            Image(
-                painter = painter,
-                contentDescription = movie.title,
-                contentScale = ContentScale.Crop,
+
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.TopCenter)
+                    .align(Alignment.TopCenter),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(IMAGE_BASE_URL + IMAGE_W500 + movie.poster_path)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = movie.title,
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = R.drawable.ic_image_not_supported),
+                placeholder = painterResource(id = R.drawable.ic_image)
             )
 
             MovieInfo(
@@ -237,3 +269,43 @@ private fun MovieTitle(name: String) = Text(
     overflow = TextOverflow.Ellipsis
 )
 
+@Composable
+fun MovieScreenTopBar() {
+
+    TopAppBar {
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = { /*TODO*/ }) {
+
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = "Settings",
+                    tint = Color.White
+                )
+
+            }
+
+            Text(
+                text = "Movies",
+                style = MaterialTheme.typography.h5,
+
+                textAlign = TextAlign.Center
+            )
+
+            IconButton(onClick = { /*TODO*/ }) {
+
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Favorite",
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
