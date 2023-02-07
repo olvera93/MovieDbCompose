@@ -26,18 +26,17 @@ class HomeViewModel @Inject constructor(
         private set
 
     init {
-        getMoviePopular()
+        getMovies()
     }
 
-    private fun getMoviePopular() {
-       launchCatching {
-           status.value = NetworkResult.Loading()
-           val response = movieRepository.getMoviePopular(Constants.API_KEY)
-           status.value = NetworkResult.Success(response)
-           handleNetworkResponse(response)
-       }
+    private fun getMovies() {
+        viewModelScope.launch {
+            status.value = NetworkResult.Loading()
+            val response = movieRepository.getMovies(Constants.API_KEY)
+            status.value = NetworkResult.Success(response)
+            handleNetworkResponse(response)
+        }
     }
-
     private fun handleNetworkResponse(networkResult: NetworkResult<MovieResult>) {
         when (networkResult) {
             is NetworkResult.Success -> {

@@ -14,4 +14,9 @@ interface MovieApi {
         @Query(QUERY_API_KEY) apiKey: String
     ): MovieResult
 
+    @GET("movie/upcoming")
+    suspend fun getMovieUpcoming(
+        @Query(QUERY_API_KEY) apiKey: String
+    ): MovieResult
+
 }
