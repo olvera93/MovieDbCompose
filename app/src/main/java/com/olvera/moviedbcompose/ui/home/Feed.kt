@@ -3,6 +3,7 @@ package com.olvera.moviedbcompose.ui.home
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,6 +53,7 @@ private const val GRID_SPAN_COUNT = 2
 @ExperimentalMaterialApi
 @Composable
 fun Feed(
+    onMovieClicked: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val moviePopular = viewModel.movieResponse.value
@@ -101,7 +102,7 @@ fun Feed(
 
                     ) {
                         val movie = moviePopular[page]
-                        MoviePopularGridItem(movie)
+                        MoviePopularGridItem(movie, onMovieClicked)
                     }
                 }
             }
@@ -113,7 +114,7 @@ fun Feed(
                 .padding(top = 240.dp, bottom = 60.dp)
         ) {
             Text(
-                text = "Upcoming Movies",
+                text = if (status is NetworkResult.Loading) "Loading..." else "Upcoming Movies",
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,17 +139,13 @@ fun Feed(
                                     .align(Alignment.TopCenter)
                                     .zIndex(2f)
                             )
-                            MovieUpcomingGridItem(movie)
+                            MovieUpcomingGridItem(movie, onMovieClicked)
                         }
                     }
                 }
             )
         }
     }
-
-
-
-
 
     if (status is NetworkResult.Loading) {
         LoadingWheel()
@@ -160,9 +157,15 @@ fun Feed(
 @ExperimentalMaterialApi
 @Composable
 fun MoviePopularGridItem(
-    movie: Movie
+    movie: Movie,
+    onMovieClicked: (Int) -> Unit
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .clickable {
+                onMovieClicked(movie.movieId)
+            }
+    ) {
         Column {
 
             AsyncImage(
@@ -189,7 +192,8 @@ fun MoviePopularGridItem(
 @ExperimentalMaterialApi
 @Composable
 fun MovieUpcomingGridItem(
-    movie: Movie
+    movie: Movie,
+    onMovieClicked: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -198,8 +202,9 @@ fun MovieUpcomingGridItem(
             .offset(y = 12.dp),
         shape = RoundedCornerShape(size = 8.dp),
         elevation = 8.dp,
+        onClick = { onMovieClicked(movie.movieId) }
 
-        ) {
+    ) {
 
         Box {
 

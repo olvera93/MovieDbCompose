@@ -7,4 +7,6 @@
     <string name="home_feed">Home</string>
     <string name="home_search">Search</string>
 
+    <!-- TopBar -->
+    <string name="topBar_detail">Detail</string>
 </resources>
