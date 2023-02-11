@@ -7,7 +7,7 @@ import com.olvera.moviedbcompose.util.Constants
 import com.olvera.moviedbcompose.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import androidx.lifecycle.viewModelScope
+import com.olvera.moviedbcompose.model.MovieDetail
 import com.olvera.moviedbcompose.model.MovieDetailResult
 import kotlinx.coroutines.launch
 
@@ -16,14 +16,14 @@ class MovieDetailViewModel @Inject constructor(
     private val movieRepository: MovieTask
 ) : MovieViewModel() {
 
-    var movieDetailResponse = mutableStateOf(MovieDetailUiState())
+    var movieDetailResponse = mutableStateOf(MovieDetailResult())
         private set
 
     var status = mutableStateOf<NetworkResult<Any>?>(null)
         private set
 
     fun getMovieDetail(movieId: Int) {
-        viewModelScope.launch {
+        launchCatching {
             status.value = NetworkResult.Loading()
             val response = movieRepository.getMovieDetail(movieId, Constants.API_KEY)
             status.value = NetworkResult.Success(response)
@@ -31,12 +31,10 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleNetworkResponse(networkResult: NetworkResult<MovieDetailResult>) {
+    private fun handleNetworkResponse(networkResult: NetworkResult<MovieDetail>) {
         when (networkResult) {
             is NetworkResult.Success -> {
-                movieDetailResponse.value = MovieDetailUiState(networkResult.data)
-                println("${networkResult.data} Success a;lsdkfj")
-
+                movieDetailResponse.value = MovieDetailResult(networkResult.data)
             }
             is NetworkResult.Error -> {
                 status.value = NetworkResult.Error(networkResult.message)
@@ -46,9 +44,4 @@ class MovieDetailViewModel @Inject constructor(
             }
         }
     }
-
-
 }
-data class MovieDetailUiState(
-    val movieDetail: MovieDetailResult? = null,
-)

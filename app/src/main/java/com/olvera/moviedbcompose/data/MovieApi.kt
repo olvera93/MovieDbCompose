@@ -25,6 +25,6 @@ interface MovieApi {
     suspend fun getMovieDetail(
         @Path(PATH_MOVIE_ID) movieId: Int,
         @Query(QUERY_API_KEY) api: String
-    ): MovieDetailResult
+    ): MovieDetail
 
 }

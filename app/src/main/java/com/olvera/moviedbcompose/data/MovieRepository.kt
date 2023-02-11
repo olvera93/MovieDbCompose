@@ -21,7 +21,7 @@ interface MovieTask {
     suspend fun getMovieDetail(
         movieId: Int,
         apiKey: String
-    ): NetworkResult<MovieDetailResult>
+    ): NetworkResult<MovieDetail>
 
 }
 
@@ -50,7 +50,7 @@ class MovieRepository @Inject constructor(
     override suspend fun getMovieDetail(
         movieId: Int,
         apiKey: String
-    ): NetworkResult<MovieDetailResult> {
+    ): NetworkResult<MovieDetail> {
         return withContext(dispatcher) {
             val movieDetail = async { downloadMovieDetail(movieId, apiKey) }
             val movieDetailResult = movieDetail.await()
@@ -62,7 +62,7 @@ class MovieRepository @Inject constructor(
         }
     }
 
-    private suspend fun downloadMovieDetail(movieId: Int, apiKey: String): NetworkResult<MovieDetailResult> =
+    private suspend fun downloadMovieDetail(movieId: Int, apiKey: String): NetworkResult<MovieDetail> =
         makeNetworkCall {
             movieApi.getMovieDetail(movieId, apiKey)
         }

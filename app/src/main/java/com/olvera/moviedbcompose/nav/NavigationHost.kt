@@ -29,7 +29,7 @@ fun NavigationHost(navController: NavHostController) {
         composable(Home.route) {
             Feed(onMovieClicked = {
                 navController.navigate("movie/${it}/detail")
-            } )
+            })
 
 
         }
@@ -38,14 +38,16 @@ fun NavigationHost(navController: NavHostController) {
             Search()
         }
 
-        composable (
+        composable(
             route = MOVIE_DETAIL,
             arguments = listOf(navArgument(ARG_MOVIE_ID) {
                 defaultValue = 0
             })
         ) {
             val movieId = it.arguments?.getInt(ARG_MOVIE_ID)
-            MovieDetailScreen(movieId = movieId ?: 0)
+            MovieDetailScreen(
+                movieId = movieId ?: 0,
+                onNavigationIconClick = { navController.navigate(Home.route) })
 
         }
 

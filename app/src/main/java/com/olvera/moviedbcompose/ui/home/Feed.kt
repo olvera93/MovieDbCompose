@@ -1,7 +1,6 @@
 package com.olvera.moviedbcompose.ui.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -115,7 +114,7 @@ fun Feed(
                 .padding(top = 240.dp, bottom = 60.dp)
         ) {
             Text(
-                text = "Upcoming Movies",
+                text = if (status is NetworkResult.Loading) "Loading..." else "Upcoming Movies",
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -148,10 +147,6 @@ fun Feed(
         }
     }
 
-
-
-
-
     if (status is NetworkResult.Loading) {
         LoadingWheel()
     }
@@ -169,7 +164,6 @@ fun MoviePopularGridItem(
         modifier = Modifier
             .clickable {
                 onMovieClicked(movie.movieId)
-                Log.i("MOVIEID", "MoviePopularGridItem: ${movie.movieId}")
             }
     ) {
         Column {
@@ -208,9 +202,9 @@ fun MovieUpcomingGridItem(
             .offset(y = 12.dp),
         shape = RoundedCornerShape(size = 8.dp),
         elevation = 8.dp,
-        onClick = { onMovieClicked(movie.movieId)  }
+        onClick = { onMovieClicked(movie.movieId) }
 
-        ) {
+    ) {
 
         Box {
 
