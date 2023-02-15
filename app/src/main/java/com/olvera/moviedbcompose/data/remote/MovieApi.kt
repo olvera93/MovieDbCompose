@@ -1,4 +1,4 @@
-package com.olvera.moviedbcompose.data
+package com.olvera.moviedbcompose.data.remote
 
 import com.olvera.moviedbcompose.model.MovieDetail
 import com.olvera.moviedbcompose.model.MovieDetailResult

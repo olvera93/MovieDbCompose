@@ -1,7 +1,7 @@
 package com.olvera.moviedbcompose.di
 
-import com.olvera.moviedbcompose.data.MovieRepository
-import com.olvera.moviedbcompose.data.MovieTask
+import com.olvera.moviedbcompose.data.remote.MovieRepository
+import com.olvera.moviedbcompose.data.remote.MovieTask
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

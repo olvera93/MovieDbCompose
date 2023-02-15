@@ -1,7 +1,7 @@
 package com.olvera.moviedbcompose.ui.detail
 
 import androidx.compose.runtime.mutableStateOf
-import com.olvera.moviedbcompose.data.MovieTask
+import com.olvera.moviedbcompose.data.remote.MovieTask
 import com.olvera.moviedbcompose.ui.MovieViewModel
 import com.olvera.moviedbcompose.util.Constants
 import com.olvera.moviedbcompose.util.NetworkResult
@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.olvera.moviedbcompose.model.MovieDetail
 import com.olvera.moviedbcompose.model.MovieDetailResult
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(

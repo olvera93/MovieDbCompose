@@ -1,6 +1,6 @@
 package com.olvera.moviedbcompose.di
 
-import com.olvera.moviedbcompose.data.MovieApi
+import com.olvera.moviedbcompose.data.remote.MovieApi
 import com.olvera.moviedbcompose.util.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
