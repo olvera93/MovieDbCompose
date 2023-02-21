@@ -1,11 +1,12 @@
 package com.olvera.moviedbcompose.data.room
 
 import com.olvera.moviedbcompose.model.Movie
+import javax.inject.Inject
 
-class MovieDbRepositoryImpl(
+class MovieDbRepositoryImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieDbRepository {
-    override fun getMovieFromRoom() = movieDao.getMovies()
-    override fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
+    override suspend fun getMovieFromRoom() = movieDao.getMovies()
+    override suspend fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
 
 }

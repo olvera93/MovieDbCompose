@@ -5,6 +5,6 @@ import com.olvera.moviedbcompose.model.Movie
 typealias Movies = List<Movie>
 interface MovieDbRepository {
 
-    fun getMovieFromRoom(): List<Movie>
-    fun addMovieToRoom(movie: Movie)
+    suspend fun getMovieFromRoom(): List<Movie>
+    suspend fun addMovieToRoom(movie: Movie)
 }
