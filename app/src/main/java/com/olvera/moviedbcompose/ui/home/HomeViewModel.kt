@@ -1,7 +1,7 @@
 package com.olvera.moviedbcompose.ui.home
 
 import androidx.compose.runtime.mutableStateOf
-import com.olvera.moviedbcompose.data.MovieTask
+import com.olvera.moviedbcompose.data.remote.MovieTask
 import com.olvera.moviedbcompose.model.Movie
 import com.olvera.moviedbcompose.model.MovieResult
 import com.olvera.moviedbcompose.ui.MovieViewModel

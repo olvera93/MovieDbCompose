@@ -1,9 +1,7 @@
-package com.olvera.moviedbcompose.data
+package com.olvera.moviedbcompose.data.remote
 
-import android.util.Log
 import com.olvera.moviedbcompose.di.DispatchersModule
 import com.olvera.moviedbcompose.model.MovieDetail
-import com.olvera.moviedbcompose.model.MovieDetailResult
 import com.olvera.moviedbcompose.model.MovieResult
 import com.olvera.moviedbcompose.util.NetworkResult
 import com.olvera.moviedbcompose.util.makeNetworkCall

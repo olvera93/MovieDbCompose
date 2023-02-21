@@ -1,11 +1,16 @@
 package com.olvera.moviedbcompose.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "movies")
 data class Movie(
+
+    @PrimaryKey
     @SerializedName("id")
     var movieId: Int,
 

@@ -10,22 +10,25 @@ data class MovieDetail(
     var id: Int,
 
     @SerializedName("backdrop_path")
-    var backdrop_path: String?=null,
+    var backdrop_path: String? = null,
 
     @SerializedName("overview")
-    var overview: String?=null,
+    var overview: String? = null,
+
+    @SerializedName("popularity")
+    val popularity: Double,
 
     @SerializedName("poster_path")
-    var poster_path: String?=null,
+    var poster_path: String? = null,
 
     @SerializedName("release_date")
-    var release_date: String?=null,
+    var release_date: String? = null,
 
     @SerializedName("title")
     var title: String? = null,
 
     @SerializedName("genres")
-    var genres: List<MovieGenre>?=null,
+    var genres: List<MovieGenre>? = null,
 
     @SerializedName("video")
     var video: Boolean,
@@ -39,4 +42,4 @@ data class MovieDetail(
     @SerializedName("homepage")
     val homepage: String?
 
-): Parcelable
+) : Parcelable
