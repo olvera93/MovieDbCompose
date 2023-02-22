@@ -40,6 +40,9 @@ data class MovieDetail(
     var vote_count: Int,
 
     @SerializedName("homepage")
-    val homepage: String?
+    val homepage: String?,
+
+    @SerializedName("runtime")
+    val runtime: Int? = null,
 
 ) : Parcelable
