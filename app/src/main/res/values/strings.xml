@@ -9,4 +9,11 @@
 
     <!-- TopBar -->
     <string name="topBar_detail">Detail</string>
+
+    <!-- Strings -->
+    <string name="add_to_favourite">Add to favourites</string>
+    <string name="rate_movie">Rate</string>
+    <string name="release_date">Release Date</string>
+    <string name="duration_movie">Duration</string>
+    <string name="vote_movie">Vote</string>
 </resources>

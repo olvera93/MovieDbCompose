@@ -2,8 +2,6 @@ package com.olvera.moviedbcompose.di
 
 import com.olvera.moviedbcompose.data.remote.MovieRepository
 import com.olvera.moviedbcompose.data.remote.MovieTask
-import com.olvera.moviedbcompose.data.room.MovieDbRepository
-import com.olvera.moviedbcompose.data.room.MovieDbRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,8 +16,4 @@ abstract class MovieTaskModule {
         movieRepository: MovieRepository
     ): MovieTask
 
-    @Binds
-    abstract fun bindMovieDb(
-        movieRepository: MovieDbRepositoryImpl
-    ): MovieDbRepository
 }
