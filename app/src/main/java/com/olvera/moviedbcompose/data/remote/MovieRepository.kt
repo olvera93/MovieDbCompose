@@ -3,6 +3,8 @@ package com.olvera.moviedbcompose.data.remote
 import com.olvera.moviedbcompose.di.DispatchersModule
 import com.olvera.moviedbcompose.model.MovieDetail
 import com.olvera.moviedbcompose.model.MovieResult
+import com.olvera.moviedbcompose.model.MovieVideo
+import com.olvera.moviedbcompose.model.MovieVideoResult
 import com.olvera.moviedbcompose.util.NetworkResult
 import com.olvera.moviedbcompose.util.makeNetworkCall
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,6 +22,11 @@ interface MovieTask {
         movieId: Int,
         apiKey: String
     ): NetworkResult<MovieDetail>
+
+    suspend fun getMovieVideos(
+        movieId: Int,
+        apiKey: String
+    ): NetworkResult<MovieVideoResult>
 
 }
 
@@ -60,7 +67,33 @@ class MovieRepository @Inject constructor(
         }
     }
 
-    private suspend fun downloadMovieDetail(movieId: Int, apiKey: String): NetworkResult<MovieDetail> =
+    override suspend fun getMovieVideos(
+        movieId: Int,
+        apiKey: String
+    ): NetworkResult<MovieVideoResult> {
+        return withContext(dispatcher) {
+            val movieVideos = async { downloadMovieVideos(movieId, apiKey) }
+            val movieVideosResult = movieVideos.await()
+            if (movieVideosResult is NetworkResult.Success) {
+                NetworkResult.Success(movieVideosResult.data)
+            } else {
+                NetworkResult.Error("Error")
+            }
+        }
+    }
+
+    private suspend fun downloadMovieVideos(
+        movieId: Int,
+        apiKey: String
+    ): NetworkResult<MovieVideoResult> =
+        makeNetworkCall {
+            movieApi.getMovieVideos(movieId, apiKey)
+        }
+
+    private suspend fun downloadMovieDetail(
+        movieId: Int,
+        apiKey: String
+    ): NetworkResult<MovieDetail> =
         makeNetworkCall {
             movieApi.getMovieDetail(movieId, apiKey)
         }
