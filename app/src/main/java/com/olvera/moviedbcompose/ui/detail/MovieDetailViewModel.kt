@@ -3,8 +3,6 @@ package com.olvera.moviedbcompose.ui.detail
 import android.os.Parcelable
 import androidx.compose.runtime.mutableStateOf
 import com.olvera.moviedbcompose.data.remote.MovieTask
-import com.olvera.moviedbcompose.data.room.MovieDbRepository
-import com.olvera.moviedbcompose.data.room.MovieDbRepositoryImpl
 import com.olvera.moviedbcompose.model.*
 import com.olvera.moviedbcompose.ui.MovieViewModel
 import com.olvera.moviedbcompose.util.Constants
@@ -15,14 +13,10 @@ import kotlinx.parcelize.Parcelize
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
-    private val movieRepository: MovieTask,
-    private val movieDbRepository: MovieDbRepositoryImpl
+    private val movieRepository: MovieTask
 ) : MovieViewModel() {
 
     var movieDetailResponse = mutableStateOf(MovieDetailResult())
-        private set
-
-    var movieRoom = mutableStateOf(MovieResult())
         private set
 
     var status = mutableStateOf<NetworkResult<Any>?>(null)
@@ -33,8 +27,8 @@ class MovieDetailViewModel @Inject constructor(
 
     fun addMovieToRoom(movie: Movie) {
         launchCatching {
-            movieDbRepository.addMovieToRoom(movie)
-            println("Movie added to room ${movie.title}")
+            status.value = NetworkResult.Loading()
+            movieRepository.addMovieToRoom(movie)
         }
     }
 
@@ -88,6 +82,6 @@ class MovieDetailViewModel @Inject constructor(
 }
 
 @Parcelize
-data class MovieResult(
+data class MovieRoomResult(
     val movie: Movie? = null
 ) : Parcelable

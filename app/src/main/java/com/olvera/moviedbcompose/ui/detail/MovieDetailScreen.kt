@@ -35,6 +35,7 @@ import androidx.core.net.toUri
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
+import com.olvera.moviedbcompose.model.Movie
 import com.olvera.moviedbcompose.model.MovieVideo
 import com.olvera.moviedbcompose.util.Constants.Companion.buildYouTubeThumbnailURL
 import com.olvera.moviedbcompose.util.Constants.Companion.buildYoutubeURL
@@ -119,15 +120,39 @@ fun MovieDetailScreen(
                             IconToggleButton(
                                 checked = isFavorite,
                                 onCheckedChange = { isFavorite = !isFavorite }) {
-                                Icon(
-                                    tint = Color.Red,
-                                    imageVector = if (isFavorite) {
-                                        Icons.Filled.Favorite
-                                    } else {
-                                        Icons.Default.FavoriteBorder
-                                    },
-                                    contentDescription = null
-                                )
+
+                                if (isFavorite) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Favorite,
+                                        contentDescription = stringResource(id = R.string.add_to_favourite),
+                                        tint = Color.Red
+                                    )
+
+                                    val movieRoom = Movie(
+                                        movie.id,
+                                        movie.poster_path,
+                                        movie.overview,
+                                        movie.release_date,
+                                        movie.title,
+                                        movie.original_title,
+                                        movie.original_language,
+                                        movie.backdrop_path,
+                                        movie.popularity,
+                                        movie.vote_count,
+                                        movie.video,
+                                        movie.vote_average
+                                    )
+
+                                    viewModel.addMovieToRoom(movieRoom)
+
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Filled.FavoriteBorder,
+                                        contentDescription = stringResource(id = R.string.add_to_favourite),
+                                        tint = Color.Red
+                                    )
+
+                                }
                             }
                         }
                     }
@@ -207,8 +232,7 @@ fun MovieVideoGridItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .width(200.dp)
-                .height(300.dp)
-            ,
+                .height(300.dp),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(buildYouTubeThumbnailURL(movie.key))
                 .crossfade(true)
