@@ -1,13 +1,13 @@
 package com.olvera.moviedbcompose.ui.detail
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarHalf
-import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,14 +26,18 @@ import com.olvera.moviedbcompose.model.MovieDetail
 import com.olvera.moviedbcompose.model.MovieGenre
 import com.olvera.moviedbcompose.util.Constants
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.core.net.toUri
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.olvera.moviedbcompose.model.MovieVideo
 import com.olvera.moviedbcompose.util.Constants.Companion.buildYouTubeThumbnailURL
+import com.olvera.moviedbcompose.util.Constants.Companion.buildYoutubeURL
 import kotlin.math.absoluteValue
 
 
@@ -48,6 +52,9 @@ fun MovieDetailScreen(
 
     val movieDetail = viewModel.movieDetailResponse.value.movieDetail
     val movieVideo = viewModel.movieVideoResponse.value
+
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.getMovieDetail(movieId)
         viewModel.getMovieVideo(movieId)
@@ -61,31 +68,68 @@ fun MovieDetailScreen(
             color = MaterialTheme.colors.background,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(bottom = 56.dp)
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 64.dp)
         ) {
 
             Column {
 
                 movieDetail?.let { movie ->
                     MovieDetailImage(movie)
+                    movie.title?.let {
+                        Text(
+                            modifier = Modifier
+                                .align(CenterHorizontally)
+                                .padding(8.dp),
+                            text = it,
+                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.h5
+                        )
+                    }
                     movie.genres?.let { genres ->
                         MovieDetailGenres(genres)
                     }
                     MovieDetailInfo(movie)
 
-                    Column(
+                    Row(
                         modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(text = "Rate", style = MaterialTheme.typography.body1)
-                        RateStars(
-                            voteAverage = movie.vote_average,
-                            modifier = Modifier
-                                .padding(4.dp)
-                        )
+                        Column(horizontalAlignment = CenterHorizontally) {
+                            Text(
+                                text = stringResource(id = R.string.rate_movie),
+                                style = MaterialTheme.typography.body1
+                            )
+
+                            RateStars(
+                                voteAverage = movie.vote_average,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                            )
+                        }
+
+                        Column(horizontalAlignment = CenterHorizontally) {
+                            var isFavorite by remember { mutableStateOf(false) }
+                            Text(
+                                text = stringResource(id = R.string.add_to_favourite),
+                                style = MaterialTheme.typography.body1
+                            )
+                            IconToggleButton(
+                                checked = isFavorite,
+                                onCheckedChange = { isFavorite = !isFavorite }) {
+                                Icon(
+                                    tint = Color.Red,
+                                    imageVector = if (isFavorite) {
+                                        Icons.Filled.Favorite
+                                    } else {
+                                        Icons.Default.FavoriteBorder
+                                    },
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     }
 
                     Divider(
@@ -98,6 +142,13 @@ fun MovieDetailScreen(
 
                     MovieDetailReview(movie)
 
+                    Divider(
+                        color = Color(0xFFE0E0E0),
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
                 }
 
                 HorizontalPager(
@@ -111,23 +162,13 @@ fun MovieDetailScreen(
                         Card(
                             modifier = Modifier
                                 .graphicsLayer {
-                                    // Calculate the absolute offset for the current page from the
-                                    // scroll position. We use the absolute value which allows us to mirror
-                                    // any effects for both directions
                                     val pageOffset =
                                         calculateCurrentOffsetForPage(page).absoluteValue
-
-                                    // We animate the scaleX + scaleY, between 85% and 100%
                                     lerp(
                                         start = 0.85f,
                                         stop = 1f,
                                         fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                    ).also { scale ->
-                                        scaleX = scale
-                                        scaleY = scale
-                                    }
-
-                                    // We animate the alpha, between 50% and 100%
+                                    )
                                     alpha = lerp(
                                         start = 0.5f,
                                         stop = 1f,
@@ -137,7 +178,10 @@ fun MovieDetailScreen(
 
                         ) {
                             val movie = movieVideo[page]
-                            MovieVideoGridItem(movie)
+                            MovieVideoGridItem(movie, onMovieClicked = {
+                                val intent = Intent(Intent.ACTION_VIEW, it)
+                                context.startActivity(intent)
+                            })
                         }
                     }
                 }
@@ -150,26 +194,36 @@ fun MovieDetailScreen(
 @Composable
 fun MovieVideoGridItem(
     movie: MovieVideo,
-
-    ) {
+    onMovieClicked: (Uri) -> Unit
+) {
     Box(
         modifier = Modifier
             .clickable {
-                //onMovieClicked(movie.id.toInt())
+                onMovieClicked(buildYoutubeURL(movie.key).toUri())
             }
     ) {
-        Column {
 
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(buildYouTubeThumbnailURL(movie.key))
-                    .crossfade(true)
-                    .build(),
-                contentDescription = movie.name
-            )
-        }
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .width(200.dp)
+                .height(300.dp)
+            ,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(buildYouTubeThumbnailURL(movie.key))
+                .crossfade(true)
+                .build(),
+            contentDescription = movie.name
+        )
+
+        Icon(
+            imageVector = Icons.Outlined.PlayCircleOutline,
+            contentDescription = "Play",
+            tint = Color.White,
+            modifier = Modifier
+                .size(64.dp)
+                .align(Alignment.Center)
+        )
     }
 }
 
@@ -202,20 +256,29 @@ fun MovieDetailInfo(movie: MovieDetail) {
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Release Date", style = MaterialTheme.typography.body1)
+        Column(horizontalAlignment = CenterHorizontally) {
+            Text(
+                text = stringResource(id = R.string.release_date),
+                style = MaterialTheme.typography.body1
+            )
             movie.release_date?.let {
                 Text(text = it, style = MaterialTheme.typography.body1)
             }
         }
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Duration", style = MaterialTheme.typography.body1)
+        Column(horizontalAlignment = CenterHorizontally) {
+            Text(
+                text = stringResource(id = R.string.duration_movie),
+                style = MaterialTheme.typography.body1
+            )
             movie.runtime?.let { Text(text = "$it min", style = MaterialTheme.typography.body1) }
         }
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Vote", style = MaterialTheme.typography.body1)
+        Column(horizontalAlignment = CenterHorizontally) {
+            Text(
+                text = stringResource(id = R.string.vote_movie),
+                style = MaterialTheme.typography.body1
+            )
             Text(text = movie.vote_count.toString(), style = MaterialTheme.typography.body1)
         }
     }
@@ -295,7 +358,6 @@ fun MovieDetailImage(movie: MovieDetail) {
                     contentDescription = movie.title
                 )
             }
-            movie.title?.let { Text(text = it, style = MaterialTheme.typography.h5) }
         }
     }
 }

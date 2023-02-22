@@ -21,7 +21,7 @@ class Constants {
         }
 
         fun buildYoutubeURL(key: String): String {
-            return "https://www.youtube.com/watch?v=" + key
+            return "$MOVIE_DETAILS_BASE_URL$key"
         }
 
 

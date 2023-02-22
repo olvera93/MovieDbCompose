@@ -71,7 +71,7 @@ fun Feed(
             ) { page ->
 
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(bottom = 56.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     Card(
