@@ -1,6 +1,7 @@
 package com.olvera.moviedbcompose.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,8 +37,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
+import androidx.navigation.compose.rememberNavController
 import com.olvera.moviedbcompose.R
 import com.olvera.moviedbcompose.composable.LoadingWheel
+import com.olvera.moviedbcompose.ui.favourite.FavouriteScreen
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_BASE_URL
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_W500
 import com.olvera.moviedbcompose.util.NetworkResult
@@ -71,7 +74,9 @@ fun Feed(
             ) { page ->
 
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 56.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     Card(
@@ -276,6 +281,7 @@ private fun MovieTitle(name: String) = Text(
 
 @Composable
 fun MovieScreenTopBar() {
+    val navController = rememberNavController()
 
     TopAppBar {
 
@@ -303,7 +309,10 @@ fun MovieScreenTopBar() {
                 textAlign = TextAlign.Center
             )
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                // navegar a la pantalla de FavouriteScreen para ver las peliculas favoritas
+
+            }) {
 
                 Icon(
                     imageVector = Icons.Filled.Favorite,

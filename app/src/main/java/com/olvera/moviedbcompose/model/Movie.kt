@@ -36,15 +36,15 @@ data class Movie(
     var backdrop_path: String? = null,
 
     @SerializedName("popularity")
-    var popularity: Double,
+    var popularity: Double = 0.0,
 
     @SerializedName("vote_count")
-    var vote_count: Int,
+    var vote_count: Int = 0,
 
     @SerializedName("video")
     var video: Boolean,
 
     @SerializedName("vote_average")
-    var vote_average: Double,
+    var vote_average: Double = 0.0,
 
     ) : Parcelable

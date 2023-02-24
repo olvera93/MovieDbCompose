@@ -13,6 +13,17 @@ class Constants {
 
         const val ARG_MOVIE_ID = "MOVIE_ID"
         const val MOVIE_DETAIL = "movie/{$ARG_MOVIE_ID}/detail"
+        const val MOVIE_FAVOURITE = "movie/favourite"
+
+        const val MOVIE_DETAILS_BASE_URL = "https://www.youtube.com/watch?v="
+
+        fun buildYouTubeThumbnailURL(key: String): String {
+            return "https://img.youtube.com/vi/$key/0.jpg"
+        }
+
+        fun buildYoutubeURL(key: String): String {
+            return "$MOVIE_DETAILS_BASE_URL$key"
+        }
 
 
     }

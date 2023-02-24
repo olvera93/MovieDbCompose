@@ -27,6 +27,12 @@ data class MovieDetail(
     @SerializedName("title")
     var title: String? = null,
 
+    @SerializedName("original_title")
+    var original_title: String? = null,
+
+    @SerializedName("original_language")
+    var original_language: String? = null,
+
     @SerializedName("genres")
     var genres: List<MovieGenre>? = null,
 
@@ -40,6 +46,9 @@ data class MovieDetail(
     var vote_count: Int,
 
     @SerializedName("homepage")
-    val homepage: String?
+    val homepage: String?,
+
+    @SerializedName("runtime")
+    val runtime: Int? = null,
 
 ) : Parcelable

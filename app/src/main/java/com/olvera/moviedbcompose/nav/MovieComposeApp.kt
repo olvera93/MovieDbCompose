@@ -48,7 +48,7 @@ fun InferiorNavigation(
     menuItems: List<ItemMenu>
 ) {
 
-    BottomAppBar() {
+    BottomAppBar {
         BottomNavigation {
             val currentRoute = currentRoute(navController = navController)
             menuItems.forEach { item ->

@@ -7,7 +7,7 @@ import com.olvera.moviedbcompose.model.Movie
 interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovie(movie: Movie)
+    suspend fun insertMovie(movie: Movie)
 
     @Query("SELECT * FROM movies")
     fun getMovies(): List<Movie>
