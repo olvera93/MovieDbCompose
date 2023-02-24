@@ -76,6 +76,22 @@ fun MovieDetailScreen(
             Column {
 
                 movieDetail?.let { movie ->
+
+                    val movieRoom = Movie(
+                        movie.id,
+                        movie.poster_path,
+                        movie.overview,
+                        movie.release_date,
+                        movie.original_title,
+                        movie.original_language,
+                        movie.title,
+                        movie.backdrop_path,
+                        movie.popularity,
+                        movie.vote_count,
+                        movie.video,
+                        movie.vote_average
+                    )
+
                     MovieDetailImage(movie)
                     movie.title?.let {
                         Text(
@@ -117,43 +133,36 @@ fun MovieDetailScreen(
                                 text = stringResource(id = R.string.add_to_favourite),
                                 style = MaterialTheme.typography.body1
                             )
-                            IconToggleButton(
-                                checked = isFavorite,
-                                onCheckedChange = { isFavorite = !isFavorite }) {
+                            isFavorite = viewModel.getMovieById(movieRoom.movieId)
+                            IconButton(
+                                onClick = {
+                                    isFavorite = !isFavorite
+                                    if (isFavorite) {
+                                        viewModel.addMovieToRoom(movieRoom)
+                                    } else {
+                                        viewModel.deleteMovieToRoom(movieRoom)
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(8.dp)
+                            ) {
+
 
                                 if (isFavorite) {
                                     Icon(
-                                        imageVector = Icons.Outlined.Favorite,
+                                        imageVector = Icons.Filled.Favorite,
                                         contentDescription = stringResource(id = R.string.add_to_favourite),
                                         tint = Color.Red
                                     )
-
-                                    val movieRoom = Movie(
-                                        movie.id,
-                                        movie.poster_path,
-                                        movie.overview,
-                                        movie.release_date,
-                                        movie.title,
-                                        movie.original_title,
-                                        movie.original_language,
-                                        movie.backdrop_path,
-                                        movie.popularity,
-                                        movie.vote_count,
-                                        movie.video,
-                                        movie.vote_average
-                                    )
-
-                                    viewModel.addMovieToRoom(movieRoom)
-
                                 } else {
                                     Icon(
-                                        imageVector = Icons.Filled.FavoriteBorder,
+                                        imageVector = Icons.Outlined.FavoriteBorder,
                                         contentDescription = stringResource(id = R.string.add_to_favourite),
-                                        tint = Color.Red
+                                        tint = Color.Gray
                                     )
-
                                 }
                             }
+
                         }
                     }
 
@@ -295,7 +304,12 @@ fun MovieDetailInfo(movie: MovieDetail) {
                 text = stringResource(id = R.string.duration_movie),
                 style = MaterialTheme.typography.body1
             )
-            movie.runtime?.let { Text(text = "$it min", style = MaterialTheme.typography.body1) }
+            movie.runtime?.let {
+                Text(
+                    text = "$it min",
+                    style = MaterialTheme.typography.body1
+                )
+            }
         }
 
         Column(horizontalAlignment = CenterHorizontally) {

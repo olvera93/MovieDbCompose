@@ -13,6 +13,7 @@ class Constants {
 
         const val ARG_MOVIE_ID = "MOVIE_ID"
         const val MOVIE_DETAIL = "movie/{$ARG_MOVIE_ID}/detail"
+        const val MOVIE_FAVOURITE = "movie/favourite"
 
         const val MOVIE_DETAILS_BASE_URL = "https://www.youtube.com/watch?v="
 

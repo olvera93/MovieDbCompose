@@ -27,6 +27,10 @@ interface MovieTask {
 
     suspend fun addMovieToRoom(movie: Movie)
 
+    suspend fun deleteMovieToRoom(movie: Movie)
+
+    suspend fun getMovieById(movieId: Int): Movie
+
 
 }
 
@@ -85,6 +89,8 @@ class MovieRepository @Inject constructor(
     }
 
     override suspend fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
+    override suspend fun deleteMovieToRoom(movie: Movie) = movieDao.deleteMovie(movie)
+    override suspend fun getMovieById(movieId: Int): Movie = movieDao.getMovie(movieId)
 
     private suspend fun downloadMovieVideos(
         movieId: Int,

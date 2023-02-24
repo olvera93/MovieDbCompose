@@ -32,6 +32,25 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteMovieToRoom(movie: Movie) {
+        launchCatching {
+            status.value = NetworkResult.Loading()
+            movieRepository.deleteMovieToRoom(movie)
+        }
+    }
+
+    fun getMovieById(movieId: Int): Boolean {
+        var isMovie = false
+        launchCatching {
+            status.value = NetworkResult.Loading()
+            val movie = movieRepository.getMovieById(movieId)
+            if (movie.movieId == movieId) {
+                isMovie = true
+            }
+        }
+        return isMovie
+    }
+
     fun getMovieDetail(movieId: Int) {
         launchCatching {
             status.value = NetworkResult.Loading()
