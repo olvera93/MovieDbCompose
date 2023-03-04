@@ -15,6 +15,7 @@ import com.olvera.moviedbcompose.ui.home.Feed
 import com.olvera.moviedbcompose.ui.home.Search
 import com.olvera.moviedbcompose.util.Constants.Companion.ARG_MOVIE_ID
 import com.olvera.moviedbcompose.util.Constants.Companion.MOVIE_DETAIL
+import com.olvera.moviedbcompose.util.Constants.Companion.MOVIE_FAVOURITE
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -29,7 +30,7 @@ fun NavigationHost(navController: NavHostController) {
                 navController.navigate("movie/${it}/detail")
             },
                 onFavoriteClicked = {
-                    navController.navigate("movie/favourite")
+                    navController.navigate(MOVIE_FAVOURITE)
                 }
             )
 
@@ -40,8 +41,10 @@ fun NavigationHost(navController: NavHostController) {
             Search()
         }
 
-        composable("movie/favourite") {
-            FavouriteScreen()
+        composable(MOVIE_FAVOURITE) {
+            FavouriteScreen(
+                onNavigationIconClick = { navController.navigate(Home.route) }
+            )
         }
 
         composable(

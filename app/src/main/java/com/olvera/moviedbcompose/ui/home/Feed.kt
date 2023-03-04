@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,17 +61,10 @@ fun Feed(
 
     Scaffold(
         topBar = {
-            Surface(modifier = Modifier.fillMaxWidth(), elevation = 16.dp) {
-                Column(
-                    Modifier
-                        .background(MaterialTheme.colors.surface)
-                        .padding(bottom = 2.dp)
-                ) {
-                    MovieScreenTopBar(onFavoriteClicked = onFavoriteClicked)
-                }
-            }
-        }
-    ) {
+            MovieScreenTopBar(onFavoriteClicked = onFavoriteClicked)
+        },
+
+        ) {
         Column {
             HorizontalPager(
                 count = moviePopular.size
@@ -89,7 +82,8 @@ fun Feed(
                                 // Calculate the absolute offset for the current page from the
                                 // scroll position. We use the absolute value which allows us to mirror
                                 // any effects for both directions
-                                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                                val pageOffset =
+                                    calculateCurrentOffsetForPage(page).absoluteValue
 
                                 // We animate the scaleX + scaleY, between 85% and 100%
                                 lerp(
@@ -287,17 +281,14 @@ private fun MovieTitle(name: String) = Text(
 fun MovieScreenTopBar(
     onFavoriteClicked: () -> Unit
 ) {
-
-    // TopBar with Favourite Icon and Title
     TopAppBar(
-        title = { Text(text = "Título") },
-        backgroundColor = Color.Cyan,
-        navigationIcon = {
+        title = { Text(text = "Movie") },
+        actions = {
             IconButton(onClick = {
                 onFavoriteClicked()
             }
             ) {
-                Icon(Icons.Filled.ArrowBack, null)
+                Icon(Icons.Filled.Favorite, null)
             }
         }
     )
