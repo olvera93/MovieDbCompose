@@ -1,7 +1,6 @@
 package com.olvera.moviedbcompose.ui.home
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,8 +11,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,12 +33,9 @@ import kotlin.math.absoluteValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
-import androidx.navigation.compose.rememberNavController
 import com.olvera.moviedbcompose.R
 import com.olvera.moviedbcompose.composable.LoadingWheel
-import com.olvera.moviedbcompose.ui.favourite.FavouriteScreen
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_BASE_URL
 import com.olvera.moviedbcompose.util.Constants.Companion.IMAGE_W500
 import com.olvera.moviedbcompose.util.NetworkResult
@@ -57,7 +52,8 @@ private const val GRID_SPAN_COUNT = 2
 @Composable
 fun Feed(
     onMovieClicked: (Int) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onFavoriteClicked: () -> Unit
 ) {
     val moviePopular = viewModel.movieResponse.value
     val status = viewModel.status.value
@@ -65,7 +61,15 @@ fun Feed(
 
     Scaffold(
         topBar = {
-            MovieScreenTopBar()
+            Surface(modifier = Modifier.fillMaxWidth(), elevation = 16.dp) {
+                Column(
+                    Modifier
+                        .background(MaterialTheme.colors.surface)
+                        .padding(bottom = 2.dp)
+                ) {
+                    MovieScreenTopBar(onFavoriteClicked = onFavoriteClicked)
+                }
+            }
         }
     ) {
         Column {
@@ -280,46 +284,22 @@ private fun MovieTitle(name: String) = Text(
 )
 
 @Composable
-fun MovieScreenTopBar() {
-    val navController = rememberNavController()
+fun MovieScreenTopBar(
+    onFavoriteClicked: () -> Unit
+) {
 
-    TopAppBar {
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            IconButton(onClick = { /*TODO*/ }) {
-
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = "Settings",
-                    tint = Color.White
-                )
-
-            }
-
-            Text(
-                text = "Movies",
-                style = MaterialTheme.typography.h5,
-
-                textAlign = TextAlign.Center
-            )
-
+    // TopBar with Favourite Icon and Title
+    TopAppBar(
+        title = { Text(text = "Título") },
+        backgroundColor = Color.Cyan,
+        navigationIcon = {
             IconButton(onClick = {
-                // navegar a la pantalla de FavouriteScreen para ver las peliculas favoritas
-
-            }) {
-
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "Favorite",
-                    tint = Color.White
-                )
+                onFavoriteClicked()
+            }
+            ) {
+                Icon(Icons.Filled.ArrowBack, null)
             }
         }
-    }
+    )
+
 }

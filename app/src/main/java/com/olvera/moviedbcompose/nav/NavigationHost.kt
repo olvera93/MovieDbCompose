@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import com.olvera.moviedbcompose.nav.ItemMenu.*
 import com.olvera.moviedbcompose.ui.detail.MovieDetailScreen
+import com.olvera.moviedbcompose.ui.favourite.FavouriteScreen
 import com.olvera.moviedbcompose.ui.home.Feed
 import com.olvera.moviedbcompose.ui.home.Search
 import com.olvera.moviedbcompose.util.Constants.Companion.ARG_MOVIE_ID
@@ -26,13 +27,21 @@ fun NavigationHost(navController: NavHostController) {
         composable(Home.route) {
             Feed(onMovieClicked = {
                 navController.navigate("movie/${it}/detail")
-            })
+            },
+                onFavoriteClicked = {
+                    navController.navigate("movie/favourite")
+                }
+            )
 
 
         }
 
         composable(Search.route) {
             Search()
+        }
+
+        composable("movie/favourite") {
+            FavouriteScreen()
         }
 
         composable(
