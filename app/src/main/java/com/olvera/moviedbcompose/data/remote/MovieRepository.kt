@@ -12,32 +12,35 @@ import javax.inject.Inject
 interface MovieTask {
 
     suspend fun getMovies(
-        apiKey: String
+            apiKey: String
     ): NetworkResult<MovieResult>
 
     suspend fun getMovieDetail(
-        movieId: Int,
-        apiKey: String
+            movieId: Int,
+            apiKey: String
     ): NetworkResult<MovieDetail>
 
     suspend fun getMovieVideos(
-        movieId: Int,
-        apiKey: String
+            movieId: Int,
+            apiKey: String
     ): NetworkResult<MovieVideoResult>
 
+    // Room
     suspend fun addMovieToRoom(movie: Movie)
 
     suspend fun deleteMovieToRoom(movie: Movie)
 
     suspend fun getMovieById(movieId: Int): Movie
 
+    suspend fun getMoviesFromRoom(): List<Movie>
+
 
 }
 
 class MovieRepository @Inject constructor(
-    private val movieApi: MovieApi,
-    private val movieDao: MovieDao,
-    private val dispatcher: CoroutineDispatcher
+        private val movieApi: MovieApi,
+        private val movieDao: MovieDao,
+        private val dispatcher: CoroutineDispatcher
 ) : MovieTask {
 
     override suspend fun getMovies(apiKey: String): NetworkResult<MovieResult> {
@@ -48,9 +51,9 @@ class MovieRepository @Inject constructor(
             val upcomingResult = upcoming.await()
             if (popularResult is NetworkResult.Success && upcomingResult is NetworkResult.Success) {
                 NetworkResult.Success(
-                    MovieResult(
-                        popularResult.data.results + upcomingResult.data.results
-                    )
+                        MovieResult(
+                                popularResult.data.results + upcomingResult.data.results
+                        )
                 )
             } else {
                 NetworkResult.Error("Error")
@@ -59,8 +62,8 @@ class MovieRepository @Inject constructor(
     }
 
     override suspend fun getMovieDetail(
-        movieId: Int,
-        apiKey: String
+            movieId: Int,
+            apiKey: String
     ): NetworkResult<MovieDetail> {
         return withContext(dispatcher) {
             val movieDetail = async { downloadMovieDetail(movieId, apiKey) }
@@ -74,8 +77,8 @@ class MovieRepository @Inject constructor(
     }
 
     override suspend fun getMovieVideos(
-        movieId: Int,
-        apiKey: String
+            movieId: Int,
+            apiKey: String
     ): NetworkResult<MovieVideoResult> {
         return withContext(dispatcher) {
             val movieVideos = async { downloadMovieVideos(movieId, apiKey) }
@@ -88,33 +91,37 @@ class MovieRepository @Inject constructor(
         }
     }
 
+    private suspend fun downloadMovieVideos(
+            movieId: Int,
+            apiKey: String
+    ): NetworkResult<MovieVideoResult> =
+            makeNetworkCall {
+                movieApi.getMovieVideos(movieId, apiKey)
+            }
+
+    private suspend fun downloadMovieDetail(
+            movieId: Int,
+            apiKey: String
+    ): NetworkResult<MovieDetail> =
+            makeNetworkCall {
+                movieApi.getMovieDetail(movieId, apiKey)
+            }
+
+    private suspend fun downloadMovieUpcoming(apiKey: String): NetworkResult<MovieResult> =
+            makeNetworkCall {
+                movieApi.getMovieUpcoming(apiKey)
+            }
+
+    private suspend fun downloadMoviePopular(apiKey: String): NetworkResult<MovieResult> =
+            makeNetworkCall {
+                movieApi.getMoviePopular(apiKey)
+            }
+
+    // Room
+
     override suspend fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
     override suspend fun deleteMovieToRoom(movie: Movie) = movieDao.deleteMovie(movie)
     override suspend fun getMovieById(movieId: Int): Movie = movieDao.getMovie(movieId)
+    override suspend fun getMoviesFromRoom(): List<Movie> = movieDao.getMovies()
 
-    private suspend fun downloadMovieVideos(
-        movieId: Int,
-        apiKey: String
-    ): NetworkResult<MovieVideoResult> =
-        makeNetworkCall {
-            movieApi.getMovieVideos(movieId, apiKey)
-        }
-
-    private suspend fun downloadMovieDetail(
-        movieId: Int,
-        apiKey: String
-    ): NetworkResult<MovieDetail> =
-        makeNetworkCall {
-            movieApi.getMovieDetail(movieId, apiKey)
-        }
-
-    private suspend fun downloadMovieUpcoming(apiKey: String): NetworkResult<MovieResult> =
-        makeNetworkCall {
-            movieApi.getMovieUpcoming(apiKey)
-        }
-
-    private suspend fun downloadMoviePopular(apiKey: String): NetworkResult<MovieResult> =
-        makeNetworkCall {
-            movieApi.getMoviePopular(apiKey)
-        }
 }
