@@ -2,6 +2,7 @@ package com.olvera.moviedbcompose.data.remote
 
 import com.olvera.moviedbcompose.model.*
 import com.olvera.moviedbcompose.util.Constants.Companion.PATH_MOVIE_ID
+import com.olvera.moviedbcompose.util.Constants.Companion.PATH_MOVIE_QUERY
 import com.olvera.moviedbcompose.util.Constants.Companion.QUERY_API_KEY
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -30,5 +31,11 @@ interface MovieApi {
         @Path(PATH_MOVIE_ID) movieId: Int,
         @Query(QUERY_API_KEY) api: String
     ): MovieVideoResult
+
+    @GET("search/movie")
+    suspend fun searchMovie(
+        @Query(QUERY_API_KEY) apiKey: String,
+        @Query(PATH_MOVIE_QUERY) query: String
+    ): MovieResult
 
 }
