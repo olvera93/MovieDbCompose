@@ -10,6 +10,7 @@ class Constants {
 
         const val QUERY_API_KEY = "api_key"
         const val PATH_MOVIE_ID = "movie_id"
+        const val PATH_MOVIE_QUERY = "query"
 
         const val ARG_MOVIE_ID = "MOVIE_ID"
         const val MOVIE_DETAIL = "movie/{$ARG_MOVIE_ID}/detail"

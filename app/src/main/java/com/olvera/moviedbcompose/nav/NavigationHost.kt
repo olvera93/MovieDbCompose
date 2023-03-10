@@ -12,7 +12,7 @@ import com.olvera.moviedbcompose.nav.ItemMenu.*
 import com.olvera.moviedbcompose.ui.detail.MovieDetailScreen
 import com.olvera.moviedbcompose.ui.favourite.FavouriteScreen
 import com.olvera.moviedbcompose.ui.home.Feed
-import com.olvera.moviedbcompose.ui.home.Search
+import com.olvera.moviedbcompose.ui.search.Search
 import com.olvera.moviedbcompose.util.Constants.Companion.ARG_MOVIE_ID
 import com.olvera.moviedbcompose.util.Constants.Companion.MOVIE_DETAIL
 import com.olvera.moviedbcompose.util.Constants.Companion.MOVIE_FAVOURITE
@@ -38,7 +38,11 @@ fun NavigationHost(navController: NavHostController) {
         }
 
         composable(Search.route) {
-            Search()
+            Search(
+                onMovieClicked = {
+                    navController.navigate("movie/${it}/detail")
+                }
+            )
         }
 
         composable(MOVIE_FAVOURITE) {
