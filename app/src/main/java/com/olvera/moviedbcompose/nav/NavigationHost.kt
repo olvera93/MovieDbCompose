@@ -38,7 +38,11 @@ fun NavigationHost(navController: NavHostController) {
         }
 
         composable(Search.route) {
-            Search()
+            Search(
+                onMovieClicked = {
+                    navController.navigate("movie/${it}/detail")
+                }
+            )
         }
 
         composable(MOVIE_FAVOURITE) {
