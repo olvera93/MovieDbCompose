@@ -27,7 +27,10 @@ fun Search(
     Column {
         SearchField(
             value = uiState.searchQuery,
-            onNewValue = { viewModel.searchMovie(it) },
+            onNewValue = {
+                viewModel.onSearchChange(it)
+                viewModel.searchMovie(it)
+            },
             modifier = Modifier.padding(10.dp)
         )
 
