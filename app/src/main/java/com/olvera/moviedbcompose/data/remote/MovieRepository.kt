@@ -61,7 +61,7 @@ class MovieRepository @Inject constructor(
                     )
                 )
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Movie not found")
             }
         }
     }
@@ -73,10 +73,11 @@ class MovieRepository @Inject constructor(
         return withContext(dispatcher) {
             val movieDetail = async { downloadMovieDetail(movieId, apiKey) }
             val movieDetailResult = movieDetail.await()
+
             if (movieDetailResult is NetworkResult.Success) {
                 NetworkResult.Success(movieDetailResult.data)
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Movie not found")
             }
         }
     }
@@ -91,7 +92,7 @@ class MovieRepository @Inject constructor(
             if (movieVideosResult is NetworkResult.Success) {
                 NetworkResult.Success(movieVideosResult.data)
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Video not found")
             }
         }
     }
@@ -103,7 +104,7 @@ class MovieRepository @Inject constructor(
             if (movieSearchResult is NetworkResult.Success) {
                 NetworkResult.Success(movieSearchResult.data)
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Movie not found")
             }
         }
     }
