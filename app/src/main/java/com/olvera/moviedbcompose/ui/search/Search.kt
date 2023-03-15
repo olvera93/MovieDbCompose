@@ -44,11 +44,6 @@ fun Search(
     val movies = viewModel.movieResponse.value
     val uiState by viewModel.uiState
 
-
-
-
-
-
     Column( modifier = Modifier
         .fillMaxSize()
         .padding(bottom = 64.dp),
