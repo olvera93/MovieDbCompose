@@ -25,11 +25,19 @@ interface MovieTask {
         apiKey: String
     ): NetworkResult<MovieVideoResult>
 
+    suspend fun searchMovie(
+        apiKey: String,
+        query: String
+    ): NetworkResult<MovieResult>
+
+    // Room
     suspend fun addMovieToRoom(movie: Movie)
 
     suspend fun deleteMovieToRoom(movie: Movie)
 
     suspend fun getMovieById(movieId: Int): Movie
+
+    suspend fun getMoviesFromRoom(): List<Movie>
 
 
 }
@@ -53,7 +61,7 @@ class MovieRepository @Inject constructor(
                     )
                 )
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Movie not found")
             }
         }
     }
@@ -65,10 +73,11 @@ class MovieRepository @Inject constructor(
         return withContext(dispatcher) {
             val movieDetail = async { downloadMovieDetail(movieId, apiKey) }
             val movieDetailResult = movieDetail.await()
+
             if (movieDetailResult is NetworkResult.Success) {
                 NetworkResult.Success(movieDetailResult.data)
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Movie not found")
             }
         }
     }
@@ -83,14 +92,22 @@ class MovieRepository @Inject constructor(
             if (movieVideosResult is NetworkResult.Success) {
                 NetworkResult.Success(movieVideosResult.data)
             } else {
-                NetworkResult.Error("Error")
+                NetworkResult.Error("Video not found")
             }
         }
     }
 
-    override suspend fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
-    override suspend fun deleteMovieToRoom(movie: Movie) = movieDao.deleteMovie(movie)
-    override suspend fun getMovieById(movieId: Int): Movie = movieDao.getMovie(movieId)
+    override suspend fun searchMovie(apiKey: String, query: String): NetworkResult<MovieResult> {
+        return withContext(dispatcher) {
+            val movieSearch = async { downloadMovieSearch(apiKey, query) }
+            val movieSearchResult = movieSearch.await()
+            if (movieSearchResult is NetworkResult.Success) {
+                NetworkResult.Success(movieSearchResult.data)
+            } else {
+                NetworkResult.Error("Movie not found")
+            }
+        }
+    }
 
     private suspend fun downloadMovieVideos(
         movieId: Int,
@@ -108,6 +125,14 @@ class MovieRepository @Inject constructor(
             movieApi.getMovieDetail(movieId, apiKey)
         }
 
+    private suspend fun downloadMovieSearch(
+        apiKey: String,
+        query: String
+    ): NetworkResult<MovieResult> =
+        makeNetworkCall {
+            movieApi.searchMovie(apiKey, query)
+        }
+
     private suspend fun downloadMovieUpcoming(apiKey: String): NetworkResult<MovieResult> =
         makeNetworkCall {
             movieApi.getMovieUpcoming(apiKey)
@@ -117,4 +142,12 @@ class MovieRepository @Inject constructor(
         makeNetworkCall {
             movieApi.getMoviePopular(apiKey)
         }
+
+    // Room
+
+    override suspend fun addMovieToRoom(movie: Movie) = movieDao.insertMovie(movie)
+    override suspend fun deleteMovieToRoom(movie: Movie) = movieDao.deleteMovie(movie)
+    override suspend fun getMovieById(movieId: Int): Movie = movieDao.getMovie(movieId)
+    override suspend fun getMoviesFromRoom(): List<Movie> = movieDao.getMovies()
+
 }
