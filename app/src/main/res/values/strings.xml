@@ -17,4 +17,5 @@
     <string name="release_date">Release Date</string>
     <string name="duration_movie">Duration</string>
     <string name="vote_movie">Vote</string>
+    <string name="unknown_error">Error</string>
 </resources>
