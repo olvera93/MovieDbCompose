@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
         getMovies()
     }
 
-    private fun getMovies() {
+     fun getMovies() {
         launchCatching {
             status.value = NetworkResult.Loading()
             val response = movieRepository.getMovies(Constants.API_KEY)
