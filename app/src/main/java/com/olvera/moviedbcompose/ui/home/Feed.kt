@@ -282,7 +282,7 @@ fun MovieScreenTopBar(
     onFavoriteClicked: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(text = "Movie") },
+        title = { Text(text = "ItsFlix") },
         actions = {
             IconButton(onClick = {
                 onFavoriteClicked()
