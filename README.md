@@ -27,3 +27,6 @@
 * [Depency Injection with Hilt](https://developer.android.com/training/dependency-injection/hilt-android?hl=es-419)
 * [Room](https://developer.android.com/training/data-storage/room?hl=es-419)
 * [TheMovieDb Api](https://developers.themoviedb.org/3/getting-started/introduction)
+
+## Google Play
+[ItsFlix](https://play.google.com/store/apps/details?id=com.olvera.moviedbcompose)
